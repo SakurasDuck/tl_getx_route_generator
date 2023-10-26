@@ -1,0 +1,33 @@
+builders:
+  tl_getx_router_generator:
+    import: "package:tl_getx_router_generator/builder.dart"
+    builder_factories: ["tlgetXRouterBuilder"]
+    build_extensions: { ".dart": [".get_x_router.json"] }
+    auto_apply: dependents
+    runs_before: ["tl_getx_router_config_generator"]
+    build_to: cache
+    defaults:
+      generate_for: 
+        include:
+          - lib/**.dart
+  tl_getx_router_args_generator:
+    import: "package:tl_getx_router_generator/builder.dart"
+    builder_factories: ["tlgetXRouterArgumentsBuilder"]
+    build_extensions: { ".dart": [".router_arguments.dart"] }
+    auto_apply: dependents
+    build_to: source
+    defaults:
+      generate_for: 
+        include:
+          - lib/**.dart
+
+  tl_getx_router_config_generator:
+    import: "package:tl_getx_router_generator/builder.dart"
+    builder_factories: ["tlgetXRouterConfigBuilder"]
+    build_extensions: { ".dart": [".get_x_router_config.dart"] }
+    auto_apply: dependents
+    build_to: source
+    defaults:
+      generate_for: 
+        include:
+          - lib/**.dart
