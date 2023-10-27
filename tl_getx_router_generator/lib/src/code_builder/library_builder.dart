@@ -146,6 +146,7 @@ class LibraryGenerator {
                 for (final args in route.parameters)
                   Parameter((b) => b
                     ..named = true
+                    ..required = args.isRequired
                     ..name = args.argumentName
                     ..type = typeRefer(args, targetFile: targetFile))
               ])
