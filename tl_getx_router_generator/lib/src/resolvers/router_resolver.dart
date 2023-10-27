@@ -80,7 +80,7 @@ class RouteResolver {
         id: id,
         fullscreenDialog: fullscreenDialog == true,
         bindings:
-            bindings?.map((e) => _typeResolver.resolveType(e.type!)).toList(),
+            bindings?.map((e) => _typeResolver.resolveType(e.toTypeValue()!)).toList(),
         preventDuplicates: preventDuplicates == true,
         popGesture: popGesture,
         showCupertinoParallax: showCupertinoParallax == true,

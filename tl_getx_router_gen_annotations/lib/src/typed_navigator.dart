@@ -9,7 +9,7 @@ extension TypedNavigator on GetInterface {
     String? id,
     bool preventDuplicates = true,
   }) async {
-    return searchDelegate(id).toNamed(
+    return Get.toNamed(
       typedRouter.routeName,
       id: id,
       arguments: typedRouter.arguments,
@@ -22,7 +22,7 @@ extension TypedNavigator on GetInterface {
     TypedTlGetRouter typedRouter, {
     String? id,
   }) {
-    return searchDelegate(id).offNamed(
+    return Get.offNamed(
       typedRouter.routeName,
       arguments: typedRouter.arguments,
       id: id,
@@ -35,24 +35,23 @@ extension TypedNavigator on GetInterface {
     bool Function(GetPage<dynamic>)? predicate, {
     String? id,
   }) {
-    return searchDelegate(id).offNamedUntil<T>(
+    return Get.offNamedUntil<T>(
       typedRouter.routeName,
-      predicate: predicate,
+      predicate,
       id: id,
       arguments: typedRouter.arguments,
     );
   }
 
   ///退掉所有路由，推新路由
-  Future<T?>? offAllNamed<T>(
+  Future<T?>? offAllTyped<T>(
     TypedTlGetRouter typedRouter, {
     String? id,
   }) {
-    return searchDelegate(id).offAllNamed<T>(
+    return Get.offAllNamed<T>(
       typedRouter.routeName,
       arguments: typedRouter.arguments,
       id: id,
     );
   }
 }
-

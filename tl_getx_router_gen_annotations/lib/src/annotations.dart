@@ -1,4 +1,3 @@
-import 'package:get/get_instance/src/bindings_interface.dart';
 
 import 'tl_curves.dart';
 import 'tl_translate.dart';
@@ -17,7 +16,7 @@ class GetXRoute {
   final TlCurves? curve;
   final String? id;
   final bool fullscreenDialog;
-  final List<BindingsInterface>? bindings;
+  final List<Type>? bindings;
   final bool preventDuplicates;
   final bool? popGesture;
   final bool showCupertinoParallax;
