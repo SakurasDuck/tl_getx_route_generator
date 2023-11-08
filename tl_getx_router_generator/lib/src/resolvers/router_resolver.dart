@@ -21,20 +21,42 @@ class RouteResolver {
         .annotationsOf(annotatedElement, throwOnUnresolved: false);
     return getXRouteAnnotations.map((getXRouteAnnotation) {
       final getXRoute = ConstantReader(getXRouteAnnotation);
-      final routeNameValue = getXRoute.peek('routeName')?.stringValue;
+      final routeNameValue = getXRoute
+          .peek('routeName')
+          ?.stringValue;
       final routeName = routeNameValue ?? CaseUtil(clazz.name).kebabCase;
       // final returnType = getXRoute.peek('returnType')?.typeValue;
-      final parentRoute = getXRoute.peek('parentRoute')?.typeValue;
-      final opaque = getXRoute.peek('opaque')?.boolValue;
-      final transition = getXRoute.peek('transition')?.typeValue;
-      final curve = getXRoute.peek('curve')?.typeValue;
-      final id = getXRoute.peek('id')?.stringValue;
-      final fullscreenDialog = getXRoute.peek('fullscreenDialog')?.boolValue;
-      final bindings = getXRoute.peek('bindings')?.listValue;
-      final preventDuplicates = getXRoute.peek('preventDuplicates')?.boolValue;
-      final popGesture = getXRoute.peek('popGesture')?.boolValue;
+      final parentRoute = getXRoute
+          .peek('parentRoute')
+          ?.typeValue;
+      final opaque = getXRoute
+          .peek('opaque')
+          ?.boolValue;
+      final transition = getXRoute
+          .peek('transition')
+          ?.typeValue;
+      final curve = getXRoute
+          .peek('curve')
+          ?.typeValue;
+      final id = getXRoute
+          .peek('id')
+          ?.stringValue;
+      final fullscreenDialog = getXRoute
+          .peek('fullscreenDialog')
+          ?.boolValue;
+      final bindings = getXRoute
+          .peek('bindings')
+          ?.listValue;
+      final preventDuplicates = getXRoute
+          .peek('preventDuplicates')
+          ?.boolValue;
+      final popGesture = getXRoute
+          .peek('popGesture')
+          ?.boolValue;
       final showCupertinoParallax =
-          getXRoute.peek('showCupertinoParallax')?.boolValue;
+          getXRoute
+              .peek('showCupertinoParallax')
+              ?.boolValue;
 
       // 直接获取第一个构造函数
       final constructor = clazz.constructors.first;
@@ -42,50 +64,37 @@ class RouteResolver {
       return GetXRouterConfig(
         type: _typeResolver.resolveType(annotatedElement.thisType),
         constructorName: constructor.name,
-        parameters: constructor.parameters.map((p) {
-          print('-----${p.name}.isOptional:${p.isOptional}');
-          print('-----${p.name}.isOptionalNamed:${p.isOptionalNamed}');
-          print(
-              '-----${p.name}.isOptionalPositional:${p.isOptionalPositional}');
-          print('-----${p.name}.isNamed:${p.isNamed}');
-          print('-----${p.name}.isRequired:${p.isRequired}');
-          print('-----${p.name}.isPositional:${p.isPositional}');
-          print(
-              '-----${p.name}.isOptionalPositional:${p.isOptionalPositional}');
-          print(
-              '-----${p.name}.isRequiredPositional:${p.isRequiredPositional}');
-          print('-----${p.name}.isRequiredNamed:${p.isRequiredNamed}');
-          return _typeResolver.resolveType(
-            p.type,
-            isOptional: p.isOptional,
-            isPositional: p.isPositional,
-            isRequired: p.isRequired,
-            name: p.name,
-          );
-        }).toList(),
+        parameters: constructor.parameters.map((p) =>
+            _typeResolver.resolveType(
+              p.type,
+              isOptional: p.isOptional,
+              isPositional: p.isPositional,
+              isRequired: p.isRequired,
+              name: p.name,
+            )).toList(),
         defaultValues: ((constructor.parameters.asMap().map<String, dynamic>(
                 (_, p) =>
-                    MapEntry<String, dynamic>(p.name, p.defaultValueCode)))
-              ..removeWhere((key, dynamic value) => value == null))
+                MapEntry<String, dynamic>(p.name, p.defaultValueCode)))
+          ..removeWhere((key, dynamic value) => value == null))
             .cast<String, String>(),
         routeName: routeName,
         parentRoute: parentRoute == null
             ? null
             : _typeResolver.resolveType(
-                parentRoute,
-              ),
+          parentRoute,
+        ),
         opaque: opaque,
         transition: transition == null
             ? null
             : _typeResolver.resolveType(
-                transition,
-              ),
+          transition,
+        ),
         curve: curve == null
             ? null
             : TlCurves.values.firstWhere(
-                (e) => e.name == curve.getDisplayString(withNullability: false),
-                orElse: () => TlCurves.easeInOut,
-              ),
+              (e) => e.name == curve.getDisplayString(withNullability: false),
+          orElse: () => TlCurves.easeInOut,
+        ),
         id: id,
         fullscreenDialog: fullscreenDialog == true,
         bindings: bindings
