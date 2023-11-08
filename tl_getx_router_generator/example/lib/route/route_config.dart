@@ -8,5 +8,7 @@ import 'route_config.get_x_router_config.dart';
   moduleName: 'example'
 )
 class TestRouteConfig with TestRouteConfigMixin{
-  static final List<GetPage> pages=[];
+  static final List<GetPage> pages=[
+    ...TestRouteConfigMixin.pages,
+  ];
 }

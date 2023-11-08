@@ -13,6 +13,6 @@ class PageAChildController extends GetxController {
   void onReady() {
     super.onReady();
     print(
-        'PageAChildController arguments.tag: ${PageAChildViewMixinArgsExt(this).tag}');
+        'PageAChildController arguments.tag: ${PageAChildViewMixinArgs.tag}');
   }
 }

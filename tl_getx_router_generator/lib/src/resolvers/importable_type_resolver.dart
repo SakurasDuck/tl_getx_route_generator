@@ -15,8 +15,9 @@ abstract class ImportableTypeResolver {
     bool forceNullable = false,
   });
 
-  ImportableType resolveFunctionType(FunctionType function,
-      [ExecutableElement? executableElement]);
+  ImportableType resolveFunctionType(
+    FunctionType function,
+  );
 
   static String? relative(String? path, Uri? to) {
     if (path == null || to == null) {
@@ -78,29 +79,39 @@ class ImportableTypeResolverImpl extends ImportableTypeResolver {
   }
 
   @override
-  ImportableType resolveFunctionType(FunctionType function,
-      [ExecutableElement? executableElement]) {
-    final functionElement =
-        executableElement ?? function.element ?? function.alias?.element;
-    if (functionElement == null) {
-      throw 'Can not resolve function type \nTry using an alias e.g typedef MyFunction = ${function.getDisplayString(withNullability: false)};';
+  ImportableType resolveFunctionType(FunctionType function) {
+    final aliasFunction = function.alias?.element;
+    if (aliasFunction == null) {
+      return ImportableType(
+        className: '',
+        typeArguments: _resolveTypeArguments(function),
+        returnType: ImportableType(
+          className: function.returnType.element?.name ??
+              function.returnType.getDisplayString(withNullability: false),
+          import: resolveImport(function.returnType.element),
+          isNullable: function.returnType.nullabilitySuffix ==
+              NullabilitySuffix.question,
+          typeArguments: _resolveTypeArguments(function.returnType),
+        ),
+      );
+    } else {
+      final displayName = aliasFunction.displayName;
+      var functionName = displayName;
+
+      Element elementToImport = aliasFunction;
+      final enclosingElement = aliasFunction.enclosingElement;
+
+      if (enclosingElement is ClassElement) {
+        functionName = '${enclosingElement.displayName}.$displayName';
+        elementToImport = enclosingElement;
+      }
+
+      return ImportableType(
+        className: functionName,
+        import: resolveImport(elementToImport),
+        isNullable: function.nullabilitySuffix == NullabilitySuffix.question,
+      );
     }
-    final displayName = functionElement.displayName;
-    var functionName = displayName;
-
-    Element elementToImport = functionElement;
-    final enclosingElement = functionElement.enclosingElement;
-
-    if (enclosingElement != null && enclosingElement is ClassElement) {
-      functionName = '${enclosingElement.displayName}.$displayName';
-      elementToImport = enclosingElement;
-    }
-
-    return ImportableType(
-      className: functionName,
-      import: resolveImport(elementToImport),
-      isNullable: function.nullabilitySuffix == NullabilitySuffix.question,
-    );
   }
 
   List<ImportableType> _resolveTypeArguments(DartType typeToCheck) {
@@ -122,6 +133,20 @@ class ImportableTypeResolverImpl extends ImportableTypeResolver {
         }
       }
     }
+    if (typeToCheck is FunctionType) {
+      for (final arg in typeToCheck.parameters) {
+        importableTypes.add(ImportableType(
+          className: arg.type.element?.name?.replaceAll('?', '') ??
+              arg.type.getDisplayString(withNullability: false),
+          name: arg.name,
+          import: resolveImport(arg.type.element),
+          isRequired: arg.isRequiredNamed || arg.isRequiredPositional,
+          isNullable: arg.type.nullabilitySuffix == NullabilitySuffix.question,
+          typeArguments: _resolveTypeArguments(arg.type),
+        ));
+      }
+    }
+
     return importableTypes;
   }
 
@@ -131,16 +156,31 @@ class ImportableTypeResolverImpl extends ImportableTypeResolver {
     bool isRequired = false,
     String? name,
     bool forceNullable = false,
+    Element? element,
+    bool isOptional = false,
+    bool isPositional = false,
   }) {
+    ImportableType? functionTypeImpl;
+    if (type is FunctionType) {
+      functionTypeImpl = resolveFunctionType(
+        type,
+      );
+    }
+
     return ImportableType(
-      className:
-          type.element?.name ?? type.getDisplayString(withNullability: false),
+      className: functionTypeImpl?.className ??
+          type.element?.name ??
+          type.getDisplayString(withNullability: false),
       name: name,
       isNullable:
           forceNullable || type.nullabilitySuffix == NullabilitySuffix.question,
-      import: resolveImport(type.element),
+      import: functionTypeImpl?.import ?? resolveImport(type.element),
       isRequired: isRequired,
-      typeArguments: _resolveTypeArguments(type),
+      isOptional: isOptional,
+      isPositional: isPositional,
+      typeArguments:
+          functionTypeImpl?.typeArguments ?? _resolveTypeArguments(type),
+      returnType: functionTypeImpl?.returnType,
     );
   }
 }

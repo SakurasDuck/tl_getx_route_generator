@@ -9,6 +9,8 @@
 // ignore_for_file: unnecessary_parenthesis
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:async' as _i10;
+
 import 'package:example/page_a/binding.dart' as _i1;
 import 'package:flutter/material.dart' as _i3;
 import 'package:get/get.dart';
@@ -55,6 +57,8 @@ mixin TestRouteConfigMixin {
         _i7.OtherBinding(),
       ],
       page: () => _i8.PageBView(
+        (Get.arguments?['id'] as int),
+        callback: (Get.arguments?['callback'] as Callback),
         tag: (Get.arguments?['tag'] as String?),
         key: (Get.arguments?['key'] as _i3.Key?),
       ),
@@ -100,10 +104,14 @@ class AChildTypedRoute extends _i9.TypedTlGetRouter {
 }
 
 class PageBTypedRoute extends _i9.TypedTlGetRouter {
-  PageBTypedRoute({
+  PageBTypedRoute(
+    int id, {
+    required Callback callback,
     String? tag,
     _i3.Key? key,
   }) {
+    super.arguments.addAll({'id': id});
+    super.arguments.addAll({'callback': callback});
     super.arguments.addAll({'tag': tag});
     super.arguments.addAll({'key': key});
   }
@@ -111,3 +119,8 @@ class PageBTypedRoute extends _i9.TypedTlGetRouter {
   @override
   final routeName = RouteNames.pageB;
 }
+
+typedef Callback = _i10.Future<void> Function({
+  required int id,
+  String? name,
+});

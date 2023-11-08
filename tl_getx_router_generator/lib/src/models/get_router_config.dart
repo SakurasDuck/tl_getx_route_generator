@@ -68,9 +68,6 @@ class GetXRouterConfig {
   factory GetXRouterConfig.fromMap(Map<String, dynamic> map) {
     return GetXRouterConfig(
       type: ImportableType.fromMap(map['type'] as Map<String, dynamic>),
-      // returnType: map['returnType'] != null
-      //     ? ImportableType.fromMap(map['returnType'] as Map<String, dynamic>)
-      //     : null,
       routeName: map['routeName'] as String? ?? '',
       constructorName: map['constructorName'] as String? ?? '',
       parameters: List<ImportableType>.from(map['parameters']?.map(

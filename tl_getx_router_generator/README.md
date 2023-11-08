@@ -147,10 +147,13 @@ class TestPageViewTypedRoute extends _i7.TypedTlGetRouter {
 
 
 ```
-### 2.5 使用
-    将TestRoutesConfigMixin.pages添加到GetMaterialApp的getPages中,并且在需要使用路由的地方导入路由配置文件,使用方法如下:
 
-    使用路由操作需要导入`package:tl_getx_router_gen_annotations/navigator.dart`文件,该文件中包含了路由操作的方法,使用方法如下:
+### 2.5 使用  
+
+  将TestRoutesConfigMixin.pages添加到GetMaterialApp的getPages中,并且在需要使用路由的地方导入路由配置文件,使用方法如下:
+
+  使用路由操作需要导入`package:tl_getx_router_gen_annotations/navigator.dart`文件,该文件中包含了路由操作的方法,使用方法如下:  
+
 ```dart
 import 'package:tl_getx_router_gen_annotations/navigator.dart';
 

@@ -33,8 +33,6 @@ analyzer:
     - "lib/i18n/messages_*.dart"
     - "lib/src/http/**"
     - "test_fixes/**"
-  language:
-    strict-casts: true
 
 linter:
   rules:

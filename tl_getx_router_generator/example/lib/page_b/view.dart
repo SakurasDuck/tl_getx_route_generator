@@ -1,4 +1,4 @@
-import 'package:example/page_b/binding.dart';
+
 import 'package:flutter/material.dart';
 import 'package:tl_getx_router_gen_annotations/tl_getx_router_gen_annotations.dart';
 import 'package:tl_getx_router_gen_annotations/navigator.dart';
@@ -6,16 +6,21 @@ import 'package:get/get.dart';
 import 'logic.dart';
 import 'other_binding.dart';
 import 'other_logic.dart';
+import 'binding.dart';
 
 @GetXRoute(
   routeName: '/page_b',
   bindings: [PageBBinding, OtherBinding],
 )
 class PageBView extends GetView<PageBController> {
-  const PageBView({this.tag, super.key});
+  const PageBView(this.id,{required this.callback, this.tag, super.key});
 
   @override
   final String? tag;
+
+  final Future<void> Function({String? name, required int id}) callback;
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +41,13 @@ class PageBView extends GetView<PageBController> {
                   'page_b_logic ${controller.count}',
                   style: Theme.of(context).textTheme.headlineMedium,
                 )),
-
             Obx(() => Text(
-              'other_logic ${otherLogic.count}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            )),
-            ElevatedButton(onPressed: ()=>otherLogic.increment(), child: Text('other logic Increment'))
+                  'other_logic ${otherLogic.count}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                )),
+            ElevatedButton(
+                onPressed: () => otherLogic.increment(),
+                child: Text('other logic Increment'))
           ],
         ),
       ),

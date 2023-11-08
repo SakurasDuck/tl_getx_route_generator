@@ -26,21 +26,22 @@ class TLGetXRouterGenerator implements Generator {
           ),
     ))
         .expand((element) => element);
-    return routesInStep.isNotEmpty
+    final result = routesInStep.isNotEmpty
         ? jsonEncode(routesInStep.map((e) => e.toMap()).toList())
         : '';
+    return result;
   }
 }
 
-
-class TLGetXRouterArgumentsGenerator extends  GeneratorForAnnotation<GetXRoute>{
+class TLGetXRouterArgumentsGenerator extends GeneratorForAnnotation<GetXRoute> {
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) async{
-     final routeAnnotation=  RouteResolver(
-              await buildStep.resolver.libraries.toList(),
-            ).resolve(element as ClassElement);
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) async {
+    final routeAnnotation = RouteResolver(
+      await buildStep.resolver.libraries.toList(),
+    ).resolve(element as ClassElement);
 
-        final generator = ArgumensBuilder(
+    final generator = ArgumentsBuilder(
       annotations: routeAnnotation.first,
       className: '${element.displayName}Mixin',
       targetFile: element.source.uri,
@@ -58,5 +59,4 @@ class TLGetXRouterArgumentsGenerator extends  GeneratorForAnnotation<GetXRoute>{
 
     return DartFormatter().format(generatedLib.accept(emitter).toString());
   }
-
 }

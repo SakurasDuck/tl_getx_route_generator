@@ -15,7 +15,6 @@ import '../resolvers/importable_type_resolver.dart';
 
 class TLGetXRouterConfigGenerator
     extends GeneratorForAnnotation<TLGetXRouterConfig> {
-  static const _navigatorClassNameDefault = 'BaseNavigator';
 
   @override
   dynamic generateForAnnotatedElement(

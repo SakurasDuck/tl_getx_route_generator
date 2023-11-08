@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:tl_getx_router_gen_annotations/tl_getx_router_gen_annotations.dart';
 
@@ -40,20 +41,28 @@ class RouteResolver {
 
       return GetXRouterConfig(
         type: _typeResolver.resolveType(annotatedElement.thisType),
-        // returnType: returnType == null
-        //     ? null
-        //     : _typeResolver.resolveType(
-        //         returnType,
-        //         forceNullable: true,
-        //       ),
         constructorName: constructor.name,
-        parameters: constructor.parameters
-            .map((p) => _typeResolver.resolveType(
-                  p.type,
-                  isRequired: p.isRequired,
-                  name: p.name,
-                ))
-            .toList(),
+        parameters: constructor.parameters.map((p) {
+          print('-----${p.name}.isOptional:${p.isOptional}');
+          print('-----${p.name}.isOptionalNamed:${p.isOptionalNamed}');
+          print(
+              '-----${p.name}.isOptionalPositional:${p.isOptionalPositional}');
+          print('-----${p.name}.isNamed:${p.isNamed}');
+          print('-----${p.name}.isRequired:${p.isRequired}');
+          print('-----${p.name}.isPositional:${p.isPositional}');
+          print(
+              '-----${p.name}.isOptionalPositional:${p.isOptionalPositional}');
+          print(
+              '-----${p.name}.isRequiredPositional:${p.isRequiredPositional}');
+          print('-----${p.name}.isRequiredNamed:${p.isRequiredNamed}');
+          return _typeResolver.resolveType(
+            p.type,
+            isOptional: p.isOptional,
+            isPositional: p.isPositional,
+            isRequired: p.isRequired,
+            name: p.name,
+          );
+        }).toList(),
         defaultValues: ((constructor.parameters.asMap().map<String, dynamic>(
                 (_, p) =>
                     MapEntry<String, dynamic>(p.name, p.defaultValueCode)))
@@ -79,8 +88,9 @@ class RouteResolver {
               ),
         id: id,
         fullscreenDialog: fullscreenDialog == true,
-        bindings:
-            bindings?.map((e) => _typeResolver.resolveType(e.toTypeValue()!)).toList(),
+        bindings: bindings
+            ?.map((e) => _typeResolver.resolveType(e.toTypeValue()!))
+            .toList(),
         preventDuplicates: preventDuplicates == true,
         popGesture: popGesture,
         showCupertinoParallax: showCupertinoParallax == true,

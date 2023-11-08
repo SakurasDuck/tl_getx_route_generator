@@ -60,6 +60,12 @@ class LibraryGenerator {
             ),
             // 路由typed
             ..._resolverTypedRouter(routes.toList()),
+            // 路由Arguments FunctionTypes
+            for (final route in routes)
+              if (route.parameters
+                  .where((element) => element.returnType != null)
+                  .isNotEmpty)
+                ...route.argumentsFunctions,
           ],
         ),
     );
@@ -94,11 +100,29 @@ class LibraryGenerator {
                 : '${route.type.className}.${route.constructorName}',
             typeRefer(route.type, targetFile: targetFile).url,
           ).call(
-              [],
-              route.parameters.asMap().map((_, p) => MapEntry(
-                  p.argumentName,
-                  Reference("Get.arguments?['${p.argumentName}']")
-                      .asA(typeRefer(p, targetFile: targetFile))))).code,
+              [
+                ...route.parameters
+                    .where((element) => element.isPositional == true)
+                    .map((p) => Reference("Get.arguments?['${p.argumentName}']")
+                        .asA(p.returnType != null
+                            ? CodeExpression(Code(CaseUtil(p.name ??
+                                    'arg_${route.parameters.indexOf(p)}')
+                                .upperCamelCase))
+                            : typeRefer(p, targetFile: targetFile)))
+                    .toList(),
+              ],
+              route.parameters
+                  .where((element) => element.isPositional != true)
+                  .toList()
+                  .asMap()
+                  .map((_, p) => MapEntry(
+                      p.argumentName,
+                      Reference("Get.arguments?['${p.argumentName}']").asA(
+                          p.returnType != null
+                              ? CodeExpression(Code(CaseUtil(p.name ??
+                                      'arg_${route.parameters.indexOf(p)}')
+                                  .upperCamelCase))
+                              : typeRefer(p, targetFile: targetFile))))).code,
       ).closure,
       if (route.transition != null)
         'transition':
@@ -142,13 +166,30 @@ class LibraryGenerator {
           ..name = '${CaseUtil(route.routeName).upperCamelCase}TypedRoute'
           ..constructors = ListBuilder([
             Constructor((b) => b
-              ..optionalParameters.addAll([
-                for (final args in route.parameters)
+              ..requiredParameters.addAll([
+                for (final arg in route.parameters
+                    .where((element) => element.isPositional))
                   Parameter((b) => b
                     ..named = true
-                    ..required = args.isRequired
-                    ..name = args.argumentName
-                    ..type = typeRefer(args, targetFile: targetFile))
+                    ..name = arg.argumentName
+                    ..type = arg.returnType != null
+                        ? Reference(CaseUtil(arg.name ??
+                                'arg_${route.parameters.indexOf(arg)}')
+                            .upperCamelCase)
+                        : typeRefer(arg, targetFile: targetFile))
+              ])
+              ..optionalParameters.addAll([
+                for (final arg in route.parameters
+                    .where((element) => element.isPositional != true))
+                  Parameter((b) => b
+                    ..named = true
+                    ..required = arg.isRequired
+                    ..name = arg.argumentName
+                    ..type = arg.returnType != null
+                        ? Reference(CaseUtil(arg.name ??
+                                'arg_${route.parameters.indexOf(arg)}')
+                            .upperCamelCase)
+                        : typeRefer(arg, targetFile: targetFile))
               ])
               ..body = Block((b) => b
                 ..statements.addAll([

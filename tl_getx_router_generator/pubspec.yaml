@@ -1,6 +1,6 @@
 name: tl_getx_router_generator
 description: tl_getx 注解路由生成器
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/SakurasDuck
 
 environment:

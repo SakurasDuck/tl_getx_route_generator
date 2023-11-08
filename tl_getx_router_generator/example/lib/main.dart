@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: '/',
             page: () => const MyHomePage(title: 'Flutter Demo Home Page')),
-        ...TestRouteConfigMixin.pages,
+        ...TestRouteConfig.pages,
       ],
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -129,7 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('goto PageA')),
             ElevatedButton(
                 onPressed: () {
-                  Get.toTyped(PageBTypedRoute());
+                  Get.toTyped(PageBTypedRoute(0,
+                      callback: ({required id, name}) async {}));
                 },
                 child: Text('goto PageB'))
           ],

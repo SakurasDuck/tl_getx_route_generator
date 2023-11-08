@@ -8,7 +8,8 @@
 import 'package:flutter/material.dart' as _i1;
 import 'package:get/get.dart';
 
-extension PageAViewMixinArgsExt on Object {
-  String? get tag => (Get.arguments?['tag'] as String?);
-  _i1.Key? get key => (Get.arguments?['key'] as _i1.Key?);
+class PageAViewMixinArgs {
+  static String? get tag => (Get.arguments?['tag'] as String?);
+
+  static _i1.Key? get key => (Get.arguments?['key'] as _i1.Key?);
 }
